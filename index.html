@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&amp;display=swap">
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('tema');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}</script>
 <!--
-  Para publicar: subir este archivo (index.html) y la tesis como tesis.pdf a la misma carpeta.
+  Para publicar: subir este archivo (index.html) y la tesis como tesina.pdf a la misma carpeta.
 -->
 <style>
 /* =========================================================
@@ -487,6 +487,66 @@ html:not(.js) .index__list{display:block;max-height:none}
   .tbl{font-size:9pt}
   :root:is([data-theme],:not([data-theme])) .fig img{filter:none}
 }
+
+/* =========================================================
+   Movimiento al desplazar (versión animada)
+   Todo queda en su estado final si no hay JavaScript
+   o si el sistema pide reducir el movimiento.
+   ========================================================= */
+
+/* Progreso de lectura: un filete de acento */
+.progress{position:fixed;z-index:25;left:0;right:0;top:max(0px,calc(var(--bar-h) - 2px));height:2px;background:var(--accent);transform:scaleX(0);transform-origin:0 50%;pointer-events:none}
+html:not(.js) .progress{display:none}
+
+/* Filetes que se trazan y bloques que aparecen */
+.anim .landing .sec::before,.anim .landing .sec::after{transform:scaleX(0);transform-origin:0 50%;transition:transform 1.1s cubic-bezier(.65,0,.35,1)}
+.anim .landing .sec::after{transition-delay:.35s}
+.anim .landing .sec.is-in::before,.anim .landing .sec.is-in::after{transform:none}
+.anim .landing .rv{opacity:0;transform:translateY(.9rem);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.anim .landing .rv.is-in{opacity:1;transform:none}
+/* El encabezado solo se funde: un transform movería su .sec-meta absoluta */
+.anim .landing header.rv{transform:none;transition:opacity .9s ease}
+.anim .landing .key.rv{transition-delay:.1s}
+.anim .landing .key__text{background:linear-gradient(var(--accent),var(--accent)) 0 0/0 1px no-repeat;padding-top:.9rem;transition:background-size 1.2s cubic-bezier(.65,0,.35,1) .45s}
+.anim .landing .key.is-in .key__text{background-size:4rem 1px}
+
+/* Tesis central: se enciende palabra por palabra */
+.thesis .w{transition:color .35s ease}
+.anim .thesis .w{color:var(--ink-2)}
+.anim .thesis .w.on{color:var(--ink)}
+
+/* Figuras de cada tema */
+.tfig{display:flex;flex-direction:column;margin-top:3rem}
+.tfig__stage{position:relative;height:11rem}
+.tfig--short .tfig__stage{height:6.75rem}
+.tfig--tall .tfig__stage{height:13rem}
+.tfig__stage canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+.tfig__cap{order:2;margin-top:.9rem;font-size:.875rem;line-height:1.5;color:var(--ink-2)}
+.tfig__readout{order:1;margin-top:.6rem;font-family:var(--mono);font-size:.8125rem;line-height:1.4;font-variant-numeric:lining-nums tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tfig__readout b{font-weight:400;color:var(--accent)}
+.tfig + .key{margin-top:3.5rem}
+
+/* La matriz se arma fila por fila y cada fila colapsa en W */
+.anim .matrix-fig .matrix td:not(.m-sum),.anim .matrix-fig .matrix tbody th{opacity:0;transform:scale(.86);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--r,0) * .32s + var(--c,0) * .08s)}
+.anim .matrix-fig .matrix .m-sum{clip-path:inset(0 100% 0 0);transition:clip-path .7s cubic-bezier(.65,0,.35,1);transition-delay:calc(var(--r,0) * .32s + .38s)}
+.anim .matrix-fig .m-max{opacity:0;transition:opacity .5s ease 1.9s}
+.anim .matrix-fig.is-in .matrix td:not(.m-sum),.anim .matrix-fig.is-in .matrix tbody th{opacity:1;transform:none}
+.anim .matrix-fig.is-in .matrix .m-sum{clip-path:inset(0 0 0 0)}
+.anim .matrix-fig.is-in .m-max{opacity:1}
+
+@media (min-width:48em){
+  .tfig__stage{height:12rem}
+  .tfig--short .tfig__stage{height:7rem}
+  .tfig--tall .tfig__stage{height:14rem}
+}
+@media (min-width:75em){
+  .tfig{display:block}
+  .tfig__cap{float:right;clear:right;width:var(--notes);margin:0 calc(-1 * (var(--gap) + var(--notes))) 1rem 0}
+  .tfig__readout{margin-top:.75rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .progress{display:none}
+}
 </style>
 </head>
 <body>
@@ -623,6 +683,10 @@ juicios.</p>
   <div class="prose">
     <p>Para diferenciar al utilitarismo de otras corrientes de pensamiento moral, el capítulo separa sus elementos primordiales, compartidos por las distintas corrientes utilitaristas desde Bentham hasta nuestros días: el consecuencialismo, el bienestarismo, la imparcialidad<span class="sn"><sup class="sn-mark" aria-hidden="true">1</sup><button class="sn-btn" type="button" aria-expanded="false" aria-controls="n1" aria-label="Nota 1">1</button><span class="sn-note" id="n1"><span class="sn-num" aria-hidden="true">1</span><span class="vh">Nota 1: </span>Mill, citando a Bentham: «que todo el mundo cuente como uno, nadie como más de uno» (Mill, 2014: 163).</span></span> y el agregacionismo. Se detiene en cada uno para indagar en sus cualidades, compararlo con otras teorías y exponer sus principales objeciones. El agregacionismo supone que el bienestar de los individuos puede sumarse y que lo realmente importante es la suma total; de allí provienen los dos problemas que se retoman en el capítulo 5: la objeción sobre la distinción entre personas y la conclusión repugnante.</p>
   </div>
+  <figure class="tfig tfig--short" data-fig="elementos">
+    <figcaption class="tfig__cap">Los cuatro elementos primordiales de la teoría, en el orden en que los recorre el capítulo (secciones 1.2 a 1.5).</figcaption>
+    <div class="tfig__stage"><canvas role="img" aria-label="Una línea que se traza de izquierda a derecha y enciende cuatro nodos: consecuencialismo, bienestarismo, imparcialidad y agregacionismo."></canvas></div>
+  </figure>
   <figure class="key">
     <figcaption class="key__label">idea clave</figcaption>
     <p class="key__text">El valor de un estado de cosas es determinado por la suma de sus partes.</p>
@@ -640,6 +704,10 @@ juicios.</p>
   <div class="prose">
     <p>El capítulo reconstruye los argumentos de los tres principales autores del utilitarismo clásico para justificar el principio de utilidad: la vía negativa de Bentham,<span class="sn"><sup class="sn-mark" aria-hidden="true">2</sup><button class="sn-btn" type="button" aria-expanded="false" aria-controls="n2" aria-label="Nota 2">2</button><span class="sn-note" id="n2"><span class="sn-num" aria-hidden="true">2</span><span class="vh">Nota 2: </span>Bentham parte de que la naturaleza puso a la humanidad bajo «dos amos soberanos: el dolor y el placer» (Bentham, 2008: 11).</span></span> la prueba de Mill, que extiende el principio de utilidad individual a la sociedad, y el método de Sidgwick, la formulación más sofisticada del utilitarismo clásico, que desemboca en un dualismo de la razón práctica ante la imposibilidad de negar al egoísmo. Frente a ese dualismo, se sostiene que en ética no basta que una teoría sea racional: también debe ser moral.<span class="sn"><sup class="sn-mark" aria-hidden="true">3</sup><button class="sn-btn" type="button" aria-expanded="false" aria-controls="n3" aria-label="Nota 3">3</button><span class="sn-note" id="n3"><span class="sn-num" aria-hidden="true">3</span><span class="vh">Nota 3: </span>Parfit (2004b: 260): una teoría moral no pregunta «¿Qué es racional?», sino «¿Qué es lo correcto?».</span></span> El egoísmo puede colapsar en situaciones subóptimas y, por su relatividad agencial, queda en medio de dos teorías, lo que debilita sus fundamentos racionales.</p>
   </div>
+  <figure class="tfig tfig--tall" data-fig="universo">
+    <figcaption class="tfig__cap">Del punto de vista del agente al «punto de vista del universo», la perspectiva imparcial que el egoísta se niega a adoptar (sección 2.4).</figcaption>
+    <div class="tfig__stage"><canvas role="img" aria-label="Un punto azul en el centro, rodeado de puntos tenues. Un círculo que empieza ceñido al punto central se agranda hasta abarcar a todos, que se vuelven nítidos."></canvas></div>
+  </figure>
   <figure class="key">
     <figcaption class="key__label">idea clave</figcaption>
     <p class="key__text">El egoísmo fracasa como teoría moral y debe adaptarse a un consecuencialismo universalista como el utilitarismo para sobrevivir.</p>
@@ -657,6 +725,10 @@ juicios.</p>
   <div class="prose">
     <p>El capítulo explora las diversas maneras en que puede aplicarse el principio de utilidad. El utilitarismo del acto, que lo aplica de manera directa a cada acción concreta, encuentra serias dificultades para respetar derechos de terceros, como muestra la objeción del trasplante,<span class="sn"><sup class="sn-mark" aria-hidden="true">4</sup><button class="sn-btn" type="button" aria-expanded="false" aria-controls="n4" aria-label="Nota 4">4</button><span class="sn-note" id="n4"><span class="sn-num" aria-hidden="true">4</span><span class="vh">Nota 4: </span>Thomson (1976: 206): un médico podría matar a un hombre sano para trasplantar sus órganos a cinco pacientes que, de otro modo, morirían.</span></span> y para justificar el cumplimiento de las promesas. Esas dificultades llevan a principios auxiliares, como el principio de daño de Mill, que abren la puerta al utilitarismo de la regla. Su formulación más simple colapsa en el utilitarismo del acto, y la versión ideal de Brandt recibe críticas por su carácter utópico. La distinción de Rawls entre dos conceptos de reglas<span class="sn"><sup class="sn-mark" aria-hidden="true">5</sup><button class="sn-btn" type="button" aria-expanded="false" aria-controls="n5" aria-label="Nota 5">5</button><span class="sn-note" id="n5"><span class="sn-num" aria-hidden="true">5</span><span class="vh">Nota 5: </span>Rawls (1955) distingue la <i>concepción sumaria</i> de las reglas, como resumen de decisiones pasadas, de la <i>concepción práctica</i>, en la que las reglas establecen las prácticas de manera pública y definitiva.</span></span> parecería mostrar un indicio de una propuesta superadora.</p>
   </div>
+  <figure class="tfig" data-fig="reglas">
+    <figcaption class="tfig__cap">Actos evaluados uno por uno que pasan a ordenarse en prácticas: del utilitarismo del acto al de la regla (secciones 3.2 y 3.3).</figcaption>
+    <div class="tfig__stage"><canvas role="img" aria-label="Puntos dispersos que, al trazarse tres líneas horizontales, se alinean sobre ellas a intervalos regulares."></canvas></div>
+  </figure>
   <figure class="key">
     <figcaption class="key__label">idea clave</figcaption>
     <p class="key__text">Podría derivarse un utilitarismo de la regla susceptible a ambos conceptos de normas: con libertad de alterar las reglas donde aplique la concepción sumaria y con respeto irrestricto a ellas donde aplique la concepción práctica.</p>
@@ -674,6 +746,10 @@ juicios.</p>
   <div class="prose">
     <p>Una vez definido el principio de utilidad y su modo de aplicación, es necesario determinar qué debemos maximizar. El capítulo aborda la teoría del valor propia del utilitarismo, el hedonismo, y distingue la vertiente cuantitativa de Bentham de la cualitativa de Mill, que establece una jerarquía entre los placeres del cuerpo y los del intelecto.<span class="sn"><sup class="sn-mark" aria-hidden="true">6</sup><button class="sn-btn" type="button" aria-expanded="false" aria-controls="n6" aria-label="Nota 6">6</button><span class="sn-note" id="n6"><span class="sn-num" aria-hidden="true">6</span><span class="vh">Nota 6: </span>«Mejor ser un Sócrates insatisfecho que un necio satisfecho» (Mill, 2014: 66).</span></span> La primera enfrenta los problemas de la medición de la utilidad y la comparabilidad entre personas; la segunda, puesta en práctica desde las instituciones, podría conllevar algún tipo de paternalismo. Por último, se intenta mostrar que la objeción de la máquina de experiencias<span class="sn"><sup class="sn-mark" aria-hidden="true">7</sup><button class="sn-btn" type="button" aria-expanded="false" aria-controls="n7" aria-label="Nota 7">7</button><span class="sn-note" id="n7"><span class="sn-num" aria-hidden="true">7</span><span class="vh">Nota 7: </span>Nozick (1991: 53-6). Según De Brigard (2010), más que rechazar la máquina, las personas rechazan un cambio radical en sus vidas: el sesgo de <i>statu quo</i>. En la versión neutral de su estudio, el 46&nbsp;% eligió seguir conectado.</span></span> falla en refutar la importancia de los estados mentales placenteros.</p>
   </div>
+  <figure class="tfig" data-fig="placer">
+    <figcaption class="tfig__cap">Para el hedonismo cuantitativo de Bentham, el valor de un placer depende, entre otros criterios, de su intensidad y su duración (sección 4.2).</figcaption>
+    <div class="tfig__stage"><canvas role="img" aria-label="Una curva de intensidad a lo largo del tiempo, con dos picos, que se dibuja de izquierda a derecha mientras se sombrea el área que queda debajo."></canvas></div>
+  </figure>
   <figure class="key">
     <figcaption class="key__label">idea clave</figcaption>
     <p class="key__text">El experimento de Nozick serviría para demostrar que las personas tienden a conservar el <i>statu quo</i>, pero fallaría en demostrar que los estados mentales no son lo único que importa.</p>
@@ -691,6 +767,11 @@ juicios.</p>
   <div class="prose">
     <p>El capítulo aborda una de las críticas más contundentes al utilitarismo: la objeción sobre la distinción entre personas. Sidgwick extrapola la indiferencia temporal del principio de prudencia a una indiferencia interpersonal; pero, mientras en el balance intrapersonal quien asume un costo recibe luego el beneficio, en el interpersonal alguien más se ve beneficiado. De allí la crítica de Rawls sobre la insensibilidad ante distribuciones injustas y la de Nozick sobre los monstruos de utilidad.<span class="sn"><sup class="sn-mark" aria-hidden="true">8</sup><button class="sn-btn" type="button" aria-expanded="false" aria-controls="n8" aria-label="Nota 8">8</button><span class="sn-note" id="n8"><span class="sn-num" aria-hidden="true">8</span><span class="vh">Nota 8: </span>Rawls (2006: 34-8). Para Nozick (1991: 52), un monstruo de utilidad obtiene de cualquier sacrificio ajeno beneficios enormemente mayores que lo que los demás pierden.</span></span> Se argumenta que, si se contempla la ley de utilidad marginal decreciente, existe un límite en las asimetrías distributivas aceptadas por el utilitarismo. El capítulo cierra con una introducción a la conclusión repugnante de Parfit.<span class="sn"><sup class="sn-mark" aria-hidden="true">9</sup><button class="sn-btn" type="button" aria-expanded="false" aria-controls="n9" aria-label="Nota 9">9</button><span class="sn-note" id="n9"><span class="sn-num" aria-hidden="true">9</span><span class="vh">Nota 9: </span>Parfit (2004b: 665-6). En el mundo Z solo habría «música funcional y patatas» (Parfit, 2004a: 19).</span></span></p>
   </div>
+  <figure class="tfig tfig--tall" data-fig="marginal">
+    <figcaption class="tfig__cap">Utilidad marginal decreciente: cada unidad adicional de recursos agrega menos bienestar. Si A y C convierten recursos en bienestar según la misma curva, transferir de A a C aumenta la suma (sección 5.2.1).</figcaption>
+    <div class="tfig__stage"><canvas role="img" aria-label="Una curva cóncava de utilidad según los recursos. Dos puntos, A con muchos recursos y C con pocos, se desplazan sobre la curva hasta igualarse, y la suma de sus utilidades pasa de 1,24 a 1,48."></canvas></div>
+    <p class="tfig__readout" aria-hidden="true">W = u(A) + u(C) = <span data-ro="a">0,96</span> + <span data-ro="c">0,28</span> = <b data-ro="w">1,24</b></p>
+  </figure>
   <figure class="key">
     <figcaption class="key__label">idea clave</figcaption>
     <p class="key__text">Podríamos admitir que el argumento contra el utilitarismo no está fundamentado en el costo que algunos miembros de la sociedad puedan pagar, sino en la posibilidad de distribuciones sumamente asimétricas.</p>
@@ -787,7 +868,7 @@ problemáticos de la teoría.</p>
     <div>
       <dt>tesis completa</dt>
       <!-- El PDF debe estar en la misma carpeta que este archivo, con el nombre tesina.pdf -->
-      <dd><a href="tesis.pdf">Descargar el PDF</a></dd>
+      <dd><a href="tesina.pdf">Descargar el PDF</a></dd>
     </div>
     <div>
       <dt>correo</dt>
@@ -4652,6 +4733,398 @@ Catastrophe. <em>Ethical Theory and Moral Practice</em>, <em>18</em>(5),
   readColors();
   layout();
   draw();
+  wake();
+})();
+</script>
+<script>
+/* =========================================================
+   Movimiento al desplazar: apariciones, tesis, progreso
+   y una figura por tema que avanza con el scroll.
+   ========================================================= */
+(() => {
+  'use strict';
+  const doc = document, root = doc.documentElement;
+  const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const reduced = () => mqReduce.matches;
+  const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  const ease = x => { x = clamp01(x); return 0.5 - 0.5 * Math.cos(Math.PI * x); };
+  const seg = (p, a, b) => clamp01((p - a) / (b - a));
+  const TAU = Math.PI * 2;
+  const prng = seed => () => {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const hex = h => {
+    h = h.trim().replace('#', '');
+    if (h.length === 3) h = h.replace(/./g, c => c + c);
+    const n = parseInt(h, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
+  const C = {};
+  const readColors = () => {
+    const cs = getComputedStyle(root);
+    C.ink = hex(cs.getPropertyValue('--ink'));
+    C.ink2 = hex(cs.getPropertyValue('--ink-2'));
+    C.acc = hex(cs.getPropertyValue('--accent'));
+    C.paper = hex(cs.getPropertyValue('--paper'));
+  };
+  const rgba = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  const num = v => v.toFixed(2).replace('.', ',');
+
+  /* ---------- Apariciones al entrar en pantalla ---------- */
+  const canAnim = 'IntersectionObserver' in window && !reduced();
+  if (canAnim) {
+    root.classList.add('anim');
+    const targets = doc.querySelectorAll('.landing .sec, .landing .sec > *');
+    targets.forEach(el => { if (!el.classList.contains('sec')) el.classList.add('rv'); });
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('is-in');
+      io.unobserve(e.target);
+    }), { rootMargin: '0px 0px -10% 0px' });
+    targets.forEach(el => io.observe(el));
+    // La matriz: fila y columna de cada celda, para escalonar la entrada
+    doc.querySelectorAll('.matrix tbody tr').forEach((tr, r) => {
+      [...tr.children].forEach((cell, c) => { cell.style.setProperty('--r', r); cell.style.setProperty('--c', c); });
+    });
+  }
+
+  /* ---------- Tesis central: palabra por palabra ---------- */
+  const thesis = doc.querySelector('.thesis');
+  let words = [];
+  if (thesis && canAnim) {
+    const walker = doc.createTreeWalker(thesis, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(n => {
+      const frag = doc.createDocumentFragment();
+      n.textContent.split(/(\s+)/).forEach(part => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { frag.appendChild(doc.createTextNode(part)); return; }
+        const s = doc.createElement('span');
+        s.className = 'w';
+        s.textContent = part;
+        frag.appendChild(s);
+      });
+      n.replaceWith(frag);
+    });
+    words = [...thesis.querySelectorAll('.w')];
+  }
+  let lit = -1;
+  function thesisTick() {
+    if (!words.length || !thesis.offsetParent) return;
+    const r = thesis.getBoundingClientRect(), vh = innerHeight;
+    // Se enciende mientras el párrafo sube del 85 % al 35 % de la pantalla
+    const p = clamp01((vh * 0.85 - r.top) / (vh * 0.5 + r.height * 0.5));
+    const n = Math.round(p * words.length);
+    if (n === lit) return;
+    lit = n;
+    words.forEach((w, i) => w.classList.toggle('on', i < n));
+  }
+
+  /* ---------- Progreso de lectura ---------- */
+  const bar = doc.createElement('div');
+  bar.className = 'progress';
+  bar.setAttribute('aria-hidden', 'true');
+  doc.body.prepend(bar);
+  function progressTick() {
+    const max = doc.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = 'scaleX(' + (max > 0 ? clamp01(scrollY / max) : 0) + ')';
+  }
+
+  /* ---------- Figuras por tema ---------- */
+  const FONT = '"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
+  const text = (ctx, f, s, x, y, color, align = 'left', base = 'alphabetic') => {
+    ctx.font = f.fs + 'px ' + FONT;
+    ctx.fillStyle = color;
+    ctx.textAlign = align;
+    ctx.textBaseline = base;
+    ctx.fillText(s, x, y);
+  };
+  const dot = (ctx, x, y, r, color) => { ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); };
+
+  const FIG = {
+    /* Capítulo 1: los cuatro elementos */
+    elementos: {
+      draw(f, p, ctx) {
+        const names = ['consecuencialismo', 'bienestarismo', 'imparcialidad', 'agregacionismo'];
+        const narrow = f.W < 520, pad = 6;
+        const y = f.H / 2, x = i => pad + i * (f.W - 2 * pad) / 3;
+        const head = x(0) + (x(3) - x(0)) * ease(seg(p, 0.05, 0.9));
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = rgba(C.ink2, 0.35);
+        ctx.beginPath(); ctx.moveTo(x(0), y); ctx.lineTo(x(3), y); ctx.stroke();
+        ctx.strokeStyle = rgba(C.ink);
+        ctx.beginPath(); ctx.moveTo(x(0), y); ctx.lineTo(head, y); ctx.stroke();
+        names.forEach((n, i) => {
+          const on = head >= x(i) - 0.5 && p > 0.02;
+          const last = i === 3;
+          const r = 5;
+          ctx.fillStyle = rgba(C.paper); ctx.beginPath(); ctx.arc(x(i), y, r, 0, TAU); ctx.fill();
+          if (on) dot(ctx, x(i), y, r, rgba(last ? C.acc : C.ink));
+          else { ctx.strokeStyle = rgba(C.ink2); ctx.beginPath(); ctx.arc(x(i), y, r - 0.5, 0, TAU); ctx.stroke(); }
+          const above = narrow && i % 2 === 1;
+          const ty = above ? y - 16 : y + 16;
+          const align = i === 0 ? 'left' : i === 3 ? 'right' : 'center';
+          const tx = i === 0 ? x(i) - r : i === 3 ? x(i) + r : x(i);
+          text(ctx, f, n, tx, ty, rgba(on ? (last ? C.acc : C.ink) : C.ink2), align, above ? 'bottom' : 'top');
+        });
+      }
+    },
+
+    /* Capítulo 2: del agente al universo */
+    universo: {
+      setup(f) {
+        const rnd = prng(1874);
+        const cx = f.W / 2, cy = f.H / 2, R = Math.min(f.H / 2 - 6, f.W / 2 - 6);
+        const pts = [];
+        const N = 64;
+        for (let i = 0; i < N; i++) {
+          let best = null, bd = -1;
+          for (let k = 0; k < 24; k++) {
+            const a = rnd() * TAU, rr = R * Math.sqrt(0.04 + 0.96 * rnd()) - 4;
+            const px = cx + rr * Math.cos(a), py = cy + rr * Math.sin(a);
+            let md = Infinity;
+            for (const q of pts) md = Math.min(md, (q.x - px) ** 2 + (q.y - py) ** 2);
+            md = Math.min(md, ((px - cx) ** 2 + (py - cy) ** 2) * 0.6);
+            if (md > bd) { bd = md; best = { x: px, y: py }; }
+          }
+          best.d = Math.hypot(best.x - cx, best.y - cy);
+          pts.push(best);
+        }
+        Object.assign(f.st, { cx, cy, R, pts });
+      },
+      draw(f, p, ctx) {
+        const { cx, cy, R, pts } = f.st;
+        const r = 11 + (R + 2 - 11) * ease(seg(p, 0.08, 0.92));
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = rgba(C.ink, 0.9);
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.stroke();
+        for (const q of pts) {
+          const k = clamp01((r - q.d) / 10);
+          dot(ctx, q.x, q.y, 2.1 + 0.5 * k, rgba(mix(C.ink2, C.ink, k), 0.3 + 0.65 * k));
+        }
+        dot(ctx, cx, cy, 4, rgba(C.acc));
+        const e = ease(seg(p, 0.3, 0.8)), y = f.H - 4;
+        text(ctx, f, 'agente', 0, y, rgba(e < 0.5 ? C.acc : C.ink2));
+        text(ctx, f, 'universo', f.W, y, rgba(e >= 0.5 ? C.ink : C.ink2), 'right');
+      }
+    },
+
+    /* Capítulo 3: del acto a la regla */
+    reglas: {
+      setup(f) {
+        const rnd = prng(1955);
+        const rows = 3, padX = 6, top = 16, bottom = f.H - 16;
+        const ys = Array.from({ length: rows }, (_, i) => top + (i + 0.5) * (bottom - top) / rows);
+        const per = Math.max(8, Math.floor((f.W - 2 * padX) / 24));
+        const gap = (f.W - 2 * padX) / per;
+        const items = [];
+        ys.forEach((y, r) => {
+          for (let c = 0; c < per; c++) items.push({
+            hx: padX + rnd() * (f.W - 2 * padX), hy: top + rnd() * (bottom - top),
+            gx: padX + (c + 0.5) * gap, gy: y, delay: 0.3 + 0.25 * rnd() + 0.05 * r
+          });
+        });
+        Object.assign(f.st, { ys, items, padX });
+      },
+      draw(f, p, ctx) {
+        const { ys, items, padX } = f.st;
+        ctx.lineWidth = 1;
+        ys.forEach((y, r) => {
+          const e = ease(seg(p, 0.05 + 0.08 * r, 0.45 + 0.08 * r));
+          if (e <= 0) return;
+          ctx.strokeStyle = rgba(C.ink, 0.85);
+          ctx.beginPath(); ctx.moveTo(padX, y); ctx.lineTo(padX + (f.W - 2 * padX) * e, y); ctx.stroke();
+        });
+        for (const it of items) {
+          const e = ease(seg(p, it.delay, it.delay + 0.4));
+          dot(ctx, it.hx + (it.gx - it.hx) * e, it.hy + (it.gy - it.hy) * e, 2.6, rgba(C.ink, 0.55 + 0.45 * e));
+        }
+      }
+    },
+
+    /* Capítulo 4: intensidad × duración */
+    placer: {
+      draw(f, p, ctx) {
+        const x0 = 1, x1 = f.W - 4, y0 = f.H - 24, yt = f.fs + 12;
+        const fn = t => 0.92 * Math.exp(-(((t - 0.26) / 0.085) ** 2)) + 0.46 * Math.exp(-(((t - 0.66) / 0.17) ** 2));
+        const X = t => x0 + (x1 - x0) * t, Y = v => y0 - (y0 - yt) * v;
+        // ejes
+        ctx.lineWidth = 1; ctx.strokeStyle = rgba(C.ink2, 0.8);
+        ctx.beginPath(); ctx.moveTo(x0 + 0.5, yt - 6); ctx.lineTo(x0 + 0.5, y0 + 0.5); ctx.lineTo(x1, y0 + 0.5); ctx.stroke();
+        text(ctx, f, 'intensidad', x0 + 8, yt - 6, rgba(C.ink2), 'left', 'middle');
+        text(ctx, f, 'duración', x1, y0 + 8, rgba(C.ink2), 'right', 'top');
+        const th = seg(p, 0.05, 0.92);
+        if (th <= 0) return;
+        const steps = Math.max(2, Math.round(160 * th));
+        ctx.beginPath(); ctx.moveTo(X(0), y0);
+        for (let i = 0; i <= steps; i++) { const t = th * i / steps; ctx.lineTo(X(t), Y(fn(t))); }
+        ctx.lineTo(X(th), y0); ctx.closePath();
+        ctx.fillStyle = rgba(C.ink, 0.1); ctx.fill();
+        ctx.beginPath();
+        for (let i = 0; i <= steps; i++) { const t = th * i / steps; i ? ctx.lineTo(X(t), Y(fn(t))) : ctx.moveTo(X(t), Y(fn(t))); }
+        ctx.strokeStyle = rgba(C.ink); ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.lineWidth = 1; ctx.strokeStyle = rgba(C.acc, 0.6);
+        ctx.beginPath(); ctx.moveTo(X(th), Y(fn(th))); ctx.lineTo(X(th), y0); ctx.stroke();
+        dot(ctx, X(th), Y(fn(th)), 3.5, rgba(C.acc));
+      }
+    },
+
+    /* Capítulo 5: utilidad marginal decreciente y transferencia */
+    marginal: {
+      draw(f, p, ctx) {
+        const u = x => Math.log(1 + 9 * x) / Math.LN10;
+        const x0 = 1, x1 = f.W - 6, y0 = f.H - 24, yt = f.fs + 14;
+        const X = t => x0 + (x1 - x0) * t, Y = v => y0 - (y0 - yt) * v;
+        ctx.lineWidth = 1; ctx.strokeStyle = rgba(C.ink2, 0.8);
+        ctx.beginPath(); ctx.moveTo(x0 + 0.5, yt - 8); ctx.lineTo(x0 + 0.5, y0 + 0.5); ctx.lineTo(x1, y0 + 0.5); ctx.stroke();
+        text(ctx, f, 'utilidad', x0 + 8, yt - 8, rgba(C.ink2), 'left', 'middle');
+        text(ctx, f, 'recursos', x1, y0 + 8, rgba(C.ink2), 'right', 'top');
+        // la curva
+        const th = seg(p, 0.02, 0.4);
+        if (th > 0) {
+          ctx.beginPath();
+          const steps = Math.max(2, Math.round(120 * th));
+          for (let i = 0; i <= steps; i++) { const t = th * i / steps; i ? ctx.lineTo(X(t), Y(u(t))) : ctx.moveTo(X(t), Y(u(t))); }
+          ctx.strokeStyle = rgba(C.ink); ctx.lineWidth = 1.5; ctx.stroke();
+        }
+        // escalones iguales de recursos, incrementos cada vez menores
+        const sE = seg(p, 0.15, 0.45);
+        if (sE > 0) {
+          ctx.lineWidth = 1;
+          for (let k = 0; k < 5; k++) {
+            const a = k / 5, b = (k + 1) / 5, vis = clamp01(sE * 5 - k);
+            if (vis <= 0) break;
+            ctx.strokeStyle = rgba(C.ink2, 0.55 * vis);
+            ctx.beginPath(); ctx.moveTo(X(a), Y(u(a))); ctx.lineTo(X(b), Y(u(a))); ctx.lineTo(X(b), Y(u(b))); ctx.stroke();
+          }
+        }
+        // A y C: de la desigualdad a la igualdad
+        const show = seg(p, 0.42, 0.5);
+        const m = ease(seg(p, 0.52, 0.95));
+        const xa = 0.9 + (0.5 - 0.9) * m, xc = 0.1 + (0.5 - 0.1) * m;
+        if (show > 0) {
+          ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
+          [[xa, C.ink], [xc, C.acc]].forEach(([t, c]) => {
+            ctx.strokeStyle = rgba(c, 0.6 * show);
+            ctx.beginPath(); ctx.moveTo(X(t), Y(u(t))); ctx.lineTo(X(t), y0); ctx.stroke();
+          });
+          ctx.setLineDash([]);
+          dot(ctx, X(xa), Y(u(xa)), 4, rgba(C.ink, show));
+          dot(ctx, X(xc), Y(u(xc)), 4, rgba(C.acc, show));
+          const sep = Math.abs(X(xa) - X(xc)) > 24;
+          text(ctx, f, sep ? 'A' : 'A = C', X(xa) + (sep ? 0 : 0), Y(u(xa)) - 9, rgba(C.ink, show), 'center', 'bottom');
+          if (sep) text(ctx, f, 'C', X(xc), Y(u(xc)) - 9, rgba(C.acc, show), 'center', 'bottom');
+        }
+        if (f.ro) {
+          const ua = u(xa), uc = u(xc), w = num(ua + uc);
+          if (f.ro.last !== w) {
+            f.ro.last = w;
+            f.ro.a.textContent = num(ua); f.ro.c.textContent = num(uc); f.ro.w.textContent = w;
+          }
+        }
+      }
+    }
+  };
+
+  const figs = [...doc.querySelectorAll('.tfig')].map(el => {
+    const stage = el.querySelector('.tfig__stage');
+    const canvas = stage && stage.querySelector('canvas');
+    const ctx = canvas && canvas.getContext('2d');
+    const kind = FIG[el.dataset.fig];
+    if (!ctx || !kind) return null;
+    const ro = el.querySelector('.tfig__readout');
+    return {
+      el, stage, canvas, ctx, kind, W: 0, H: 0, fs: 12, st: {}, s: -1, drawn: -1, vis: false,
+      ro: ro ? { a: ro.querySelector('[data-ro="a"]'), c: ro.querySelector('[data-ro="c"]'), w: ro.querySelector('[data-ro="w"]'), last: null } : null
+    };
+  }).filter(Boolean);
+
+  function layout(f) {
+    const r = f.stage.getBoundingClientRect();
+    f.W = r.width; f.H = r.height;
+    if (!f.W || !f.H) return;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    f.canvas.width = Math.round(f.W * dpr);
+    f.canvas.height = Math.round(f.H * dpr);
+    f.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    f.fs = f.W < 420 ? 11 : 12;
+    f.st = {};
+    if (f.kind.setup) f.kind.setup(f);
+    f.drawn = -1;
+  }
+  function render(f) {
+    if (!f.W || !f.H) return;
+    f.ctx.clearRect(0, 0, f.W, f.H);
+    f.kind.draw(f, f.s, f.ctx);
+    f.drawn = f.s;
+  }
+  // Avance de cada figura: empieza cuando asoma por abajo y termina a un cuarto de la pantalla
+  function targetOf(f) {
+    if (reduced()) return 1;
+    const r = f.stage.getBoundingClientRect(), vh = innerHeight;
+    return clamp01((vh * 0.95 - r.top) / (vh * 0.7));
+  }
+
+  let raf = 0, last = 0;
+  function frame(now) {
+    raf = 0;
+    const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
+    last = now;
+    let busy = false;
+    for (const f of figs) {
+      if (!f.vis || !f.W) continue;
+      const g = targetOf(f);
+      if (f.s < 0) f.s = g;
+      else f.s += (g - f.s) * (1 - Math.exp(-dt / 0.16));
+      if (Math.abs(g - f.s) < 5e-4) f.s = g; else busy = true;
+      if (f.s !== f.drawn) render(f);
+    }
+    thesisTick();
+    progressTick();
+    if (busy) kick();
+  }
+  function kick() {
+    if (raf) return;
+    if (!last) last = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+  const wake = () => { last = performance.now(); kick(); };
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      const f = figs.find(x => x.stage === e.target);
+      if (!f) return;
+      f.vis = e.isIntersecting;
+      if (f.vis) { if (!f.W) layout(f); wake(); }
+    }), { rootMargin: '10% 0px' });
+    figs.forEach(f => io.observe(f.stage));
+  } else figs.forEach(f => { f.vis = true; });
+
+  const relayoutAll = () => { figs.forEach(f => { layout(f); if (f.s >= 0) render(f); }); wake(); };
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver(es => es.forEach(e => {
+      const f = figs.find(x => x.stage === e.target);
+      if (f) { layout(f); if (f.s >= 0) render(f); }
+    }));
+    figs.forEach(f => ro.observe(f.stage));
+  } else addEventListener('resize', relayoutAll);
+
+  const recolor = () => { readColors(); figs.forEach(f => { if (f.s >= 0) render(f); }); };
+  addEventListener('scroll', wake, { passive: true });
+  addEventListener('resize', wake);
+  addEventListener('hashchange', () => requestAnimationFrame(wake));
+  doc.addEventListener('themechange', recolor);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', recolor);
+  mqReduce.addEventListener('change', wake);
+  if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(() => figs.forEach(f => { if (f.s >= 0) render(f); }));
+
+  readColors();
+  figs.forEach(layout);
   wake();
 })();
 </script>
